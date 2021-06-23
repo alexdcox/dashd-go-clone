@@ -9,9 +9,9 @@ import (
 	"encoding/json"
 	"errors"
 
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcutil"
-	"github.com/dashevo/dashd-go/btcjson"
+	"github.com/alexdcox/dashd-go/chaincfg/chainhash"
+	"github.com/alexdcox/dashutil"
+	"github.com/alexdcox/dashd-go/btcjson"
 )
 
 // FutureGenerateResult is a future promise to deliver the result of a

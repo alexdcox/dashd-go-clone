@@ -9,7 +9,7 @@ package rpcclient
 import (
 	"encoding/json"
 
-	"github.com/dashevo/dashd-go/btcjson"
+	"github.com/alexdcox/dashd-go/btcjson"
 )
 
 // FutureGetMasternodeStatusResult is a future promise to deliver the result of a

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/dashevo/dashd-go/btcjson"
+	"github.com/alexdcox/dashd-go/btcjson"
 )
 
 func TestBLS(t *testing.T) {

@@ -9,10 +9,10 @@ import (
 	"math/rand"
 	"testing"
 
-	"github.com/btcsuite/btcd/chaincfg/chainhash"
-	"github.com/btcsuite/btcd/mining"
-	"github.com/btcsuite/btcd/wire"
-	"github.com/btcsuite/btcutil"
+	"github.com/alexdcox/dashd-go/chaincfg/chainhash"
+	"github.com/alexdcox/dashd-go/mining"
+	"github.com/alexdcox/dashd-go/wire"
+	"github.com/alexdcox/dashutil"
 )
 
 // newTestFeeEstimator creates a feeEstimator with some different parameters

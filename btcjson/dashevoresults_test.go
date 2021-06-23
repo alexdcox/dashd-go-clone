@@ -2,7 +2,7 @@ package btcjson_test
 
 import (
 	"encoding/json"
-	"github.com/dashevo/dashd-go/btcjson"
+	"github.com/alexdcox/dashd-go/btcjson"
 	"testing"
 )
 

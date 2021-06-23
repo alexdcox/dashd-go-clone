@@ -15,9 +15,9 @@ import (
 	"runtime/debug"
 	"runtime/pprof"
 
-	"github.com/btcsuite/btcd/blockchain/indexers"
-	"github.com/btcsuite/btcd/database"
-	"github.com/btcsuite/btcd/limits"
+	"github.com/alexdcox/dashd-go/blockchain/indexers"
+	"github.com/alexdcox/dashd-go/database"
+	"github.com/alexdcox/dashd-go/limits"
 )
 
 const (

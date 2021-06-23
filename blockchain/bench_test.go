@@ -7,7 +7,7 @@ package blockchain
 import (
 	"testing"
 
-	"github.com/btcsuite/btcutil"
+	"github.com/alexdcox/dashutil"
 )
 
 // BenchmarkIsCoinBase performs a simple benchmark against the IsCoinBase

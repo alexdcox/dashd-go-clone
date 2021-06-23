@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/dashevo/dashd-go/txscript"
+	"github.com/alexdcox/dashd-go/txscript"
 )
 
 // CreateWalletResult models the result of the createwallet command.
