@@ -28,7 +28,7 @@
   * [mempool](https://github.com/alexdcox/dashd-go/tree/master/mempool) -
     Package mempool provides a policy-enforced pool of unmined bitcoin
     transactions.
-  * [btcutil](https://github.com/alexdcox/dashutil) - Provides Bitcoin-specific
+  * [dashutil](https://github.com/alexdcox/dashutil) - Provides Bitcoin-specific
     convenience functions and types
   * [chainhash](https://github.com/alexdcox/dashd-go/tree/master/chaincfg/chainhash) -
     Provides a generic hash type and associated functions that allows the
