@@ -1,7 +1,6 @@
 module github.com/alexdcox/dashd-go
 
 require (
-	github.com/alexdcox/dashutil v0.0.0
 	github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f
 	github.com/btcsuite/go-socks v0.0.0-20170105172521-4720035b7bfd
 	github.com/btcsuite/goleveldb v1.0.0
@@ -13,9 +12,5 @@ require (
 	github.com/jrick/logrotate v1.0.0
 	golang.org/x/crypto v0.0.0-20210616213533-5ff15b29337e
 )
-
-replace github.com/alexdcox/dashd-go => ./
-
-replace github.com/alexdcox/dashutil v0.0.0 => ../dashutil
 
 go 1.14
