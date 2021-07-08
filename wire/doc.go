@@ -84,8 +84,8 @@ message and which bitcoin network the message applies to.  This package provides
 the following constants:
 
 	wire.MainNet
-	wire.TestNet  (Regression test network)
-	wire.TestNet3 (Test network version 3)
+	wire.RegTestNet  (Regression test network)
+	wire.TestNet (Test network version 3)
 	wire.SimNet   (Simulation test network)
 
 Determining Message Type

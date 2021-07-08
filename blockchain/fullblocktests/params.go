@@ -94,7 +94,7 @@ var (
 // allow them to change out from under the tests potentially invalidating them.
 var regressionNetParams = &chaincfg.Params{
 	Name:        "regtest",
-	Net:         wire.TestNet,
+	Net:         wire.RegTestNet,
 	DefaultPort: "18444",
 
 	// Chain parameters

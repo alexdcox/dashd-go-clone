@@ -64,13 +64,8 @@ func TestRegister(t *testing.T) {
 					err:    ErrDuplicateNet,
 				},
 				{
-					name:   "duplicate testnet3",
-					params: &TestNet3Params,
-					err:    ErrDuplicateNet,
-				},
-				{
-					name:   "duplicate simnet",
-					params: &SimNetParams,
+					name:   "duplicate testnet",
+					params: &TestNetParams,
 					err:    ErrDuplicateNet,
 				},
 			},
@@ -80,15 +75,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.PubKeyHashAddrID,
+					magic: TestNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.PubKeyHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
@@ -106,15 +97,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.ScriptHashAddrID,
+					magic: TestNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.ScriptHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
@@ -132,15 +119,11 @@ func TestRegister(t *testing.T) {
 					valid:  true,
 				},
 				{
-					prefix: TestNet3Params.Bech32HRPSegwit + "1",
+					prefix: TestNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
 					prefix: RegressionNetParams.Bech32HRPSegwit + "1",
-					valid:  true,
-				},
-				{
-					prefix: SimNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
@@ -171,18 +154,13 @@ func TestRegister(t *testing.T) {
 					err:  nil,
 				},
 				{
-					priv: TestNet3Params.HDPrivateKeyID[:],
-					want: TestNet3Params.HDPublicKeyID[:],
+					priv: TestNetParams.HDPrivateKeyID[:],
+					want: TestNetParams.HDPublicKeyID[:],
 					err:  nil,
 				},
 				{
 					priv: RegressionNetParams.HDPrivateKeyID[:],
 					want: RegressionNetParams.HDPublicKeyID[:],
-					err:  nil,
-				},
-				{
-					priv: SimNetParams.HDPrivateKeyID[:],
-					want: SimNetParams.HDPublicKeyID[:],
 					err:  nil,
 				},
 				{
@@ -214,15 +192,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.PubKeyHashAddrID,
+					magic: TestNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.PubKeyHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
@@ -240,15 +214,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.ScriptHashAddrID,
+					magic: TestNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.ScriptHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
@@ -266,15 +236,11 @@ func TestRegister(t *testing.T) {
 					valid:  true,
 				},
 				{
-					prefix: TestNet3Params.Bech32HRPSegwit + "1",
+					prefix: TestNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
 					prefix: RegressionNetParams.Bech32HRPSegwit + "1",
-					valid:  true,
-				},
-				{
-					prefix: SimNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
@@ -321,12 +287,7 @@ func TestRegister(t *testing.T) {
 				},
 				{
 					name:   "duplicate testnet3",
-					params: &TestNet3Params,
-					err:    ErrDuplicateNet,
-				},
-				{
-					name:   "duplicate simnet",
-					params: &SimNetParams,
+					params: &TestNetParams,
 					err:    ErrDuplicateNet,
 				},
 				{
@@ -341,15 +302,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.PubKeyHashAddrID,
+					magic: TestNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.PubKeyHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.PubKeyHashAddrID,
 					valid: true,
 				},
 				{
@@ -367,15 +324,11 @@ func TestRegister(t *testing.T) {
 					valid: true,
 				},
 				{
-					magic: TestNet3Params.ScriptHashAddrID,
+					magic: TestNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
 					magic: RegressionNetParams.ScriptHashAddrID,
-					valid: true,
-				},
-				{
-					magic: SimNetParams.ScriptHashAddrID,
 					valid: true,
 				},
 				{
@@ -393,15 +346,11 @@ func TestRegister(t *testing.T) {
 					valid:  true,
 				},
 				{
-					prefix: TestNet3Params.Bech32HRPSegwit + "1",
+					prefix: TestNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
 					prefix: RegressionNetParams.Bech32HRPSegwit + "1",
-					valid:  true,
-				},
-				{
-					prefix: SimNetParams.Bech32HRPSegwit + "1",
 					valid:  true,
 				},
 				{
@@ -432,18 +381,13 @@ func TestRegister(t *testing.T) {
 					err:  nil,
 				},
 				{
-					priv: TestNet3Params.HDPrivateKeyID[:],
-					want: TestNet3Params.HDPublicKeyID[:],
+					priv: TestNetParams.HDPrivateKeyID[:],
+					want: TestNetParams.HDPublicKeyID[:],
 					err:  nil,
 				},
 				{
 					priv: RegressionNetParams.HDPrivateKeyID[:],
 					want: RegressionNetParams.HDPublicKeyID[:],
-					err:  nil,
-				},
-				{
-					priv: SimNetParams.HDPrivateKeyID[:],
-					want: SimNetParams.HDPublicKeyID[:],
 					err:  nil,
 				},
 				{

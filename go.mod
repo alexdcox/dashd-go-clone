@@ -1,7 +1,8 @@
 module github.com/alexdcox/dashd-go
 
 require (
-	github.com/alexdcox/dashutil v0.0.0-20210630035448-fab8c3e3d996 // indirect
+	github.com/alexdcox/dashutil v0.0.0-20210630035448-fab8c3e3d996
+	github.com/btcsuite/btcd v0.22.0-beta // indirect
 	github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f
 	github.com/btcsuite/go-socks v0.0.0-20170105172521-4720035b7bfd
 	github.com/btcsuite/goleveldb v1.0.0

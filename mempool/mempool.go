@@ -14,13 +14,13 @@ import (
 
 	"github.com/alexdcox/dashd-go/blockchain"
 	"github.com/alexdcox/dashd-go/blockchain/indexers"
+	"github.com/alexdcox/dashd-go/btcjson"
 	"github.com/alexdcox/dashd-go/chaincfg"
 	"github.com/alexdcox/dashd-go/chaincfg/chainhash"
 	"github.com/alexdcox/dashd-go/mining"
 	"github.com/alexdcox/dashd-go/txscript"
 	"github.com/alexdcox/dashd-go/wire"
 	"github.com/alexdcox/dashutil"
-	"github.com/alexdcox/dashd-go/btcjson"
 )
 
 const (
@@ -938,11 +938,6 @@ func (mp *TxPool) maybeAcceptTransaction(tx *dashutil.Tx, isNew, rateLimit, reje
 
 		if !segwitActive {
 			simnetHint := ""
-			if mp.cfg.ChainParams.Net == wire.SimNet {
-				bestHeight := mp.cfg.BestHeight()
-				simnetHint = fmt.Sprintf(" (The threshold for segwit activation is 300 blocks on simnet, "+
-					"current best height is %d)", bestHeight)
-			}
 			str := fmt.Sprintf("transaction %v has witness data, "+
 				"but segwit isn't active yet%s", txHash, simnetHint)
 			return nil, nil, txRuleError(wire.RejectNonstandard, str)

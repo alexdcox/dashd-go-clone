@@ -8,12 +8,10 @@
 package rpctest
 
 import (
-	"fmt"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/alexdcox/dashd-go/chaincfg"
 	"github.com/alexdcox/dashd-go/chaincfg/chainhash"
 	"github.com/alexdcox/dashd-go/txscript"
 	"github.com/alexdcox/dashd-go/wire"
@@ -103,28 +101,6 @@ func assertConnectedTo(t *testing.T, nodeA *Harness, nodeB *Harness) {
 	}
 }
 
-func testConnectNode(r *Harness, t *testing.T) {
-	// Create a fresh test harness.
-	harness, err := New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := harness.SetUp(false, 0); err != nil {
-		t.Fatalf("unable to complete rpctest setup: %v", err)
-	}
-	defer harness.TearDown()
-
-	// Establish a p2p connection from our new local harness to the main
-	// harness.
-	if err := ConnectNode(harness, r); err != nil {
-		t.Fatalf("unable to connect local to main harness: %v", err)
-	}
-
-	// The main harness should show up in our local harness' peer's list,
-	// and vice verse.
-	assertConnectedTo(t, harness, r)
-}
-
 func testTearDownAll(t *testing.T) {
 	// Grab a local copy of the currently active harnesses before
 	// attempting to tear them all down.
@@ -146,182 +122,6 @@ func testTearDownAll(t *testing.T) {
 		if _, err := os.Stat(harness.testNodeDir); err == nil {
 			t.Errorf("created test datadir was not deleted.")
 		}
-	}
-}
-
-func testActiveHarnesses(r *Harness, t *testing.T) {
-	numInitialHarnesses := len(ActiveHarnesses())
-
-	// Create a single test harness.
-	harness1, err := New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer harness1.TearDown()
-
-	// With the harness created above, a single harness should be detected
-	// as active.
-	numActiveHarnesses := len(ActiveHarnesses())
-	if !(numActiveHarnesses > numInitialHarnesses) {
-		t.Fatalf("ActiveHarnesses not updated, should have an " +
-			"additional test harness listed.")
-	}
-}
-
-func testJoinMempools(r *Harness, t *testing.T) {
-	// Assert main test harness has no transactions in its mempool.
-	pooledHashes, err := r.Node.GetRawMempool()
-	if err != nil {
-		t.Fatalf("unable to get mempool for main test harness: %v", err)
-	}
-	if len(pooledHashes) != 0 {
-		t.Fatal("main test harness mempool not empty")
-	}
-
-	// Create a local test harness with only the genesis block.  The nodes
-	// will be synced below so the same transaction can be sent to both
-	// nodes without it being an orphan.
-	harness, err := New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := harness.SetUp(false, 0); err != nil {
-		t.Fatalf("unable to complete rpctest setup: %v", err)
-	}
-	defer harness.TearDown()
-
-	nodeSlice := []*Harness{r, harness}
-
-	// Both mempools should be considered synced as they are empty.
-	// Therefore, this should return instantly.
-	if err := JoinNodes(nodeSlice, Mempools); err != nil {
-		t.Fatalf("unable to join node on mempools: %v", err)
-	}
-
-	// Generate a coinbase spend to a new address within the main harness'
-	// mempool.
-	addr, err := r.NewAddress()
-	addrScript, err := txscript.PayToAddrScript(addr)
-	if err != nil {
-		t.Fatalf("unable to generate pkscript to addr: %v", err)
-	}
-	output := wire.NewTxOut(5e8, addrScript)
-	testTx, err := r.CreateTransaction([]*wire.TxOut{output}, 10, true)
-	if err != nil {
-		t.Fatalf("coinbase spend failed: %v", err)
-	}
-	if _, err := r.Node.SendRawTransaction(testTx, true); err != nil {
-		t.Fatalf("send transaction failed: %v", err)
-	}
-
-	// Wait until the transaction shows up to ensure the two mempools are
-	// not the same.
-	harnessSynced := make(chan struct{})
-	go func() {
-		for {
-			poolHashes, err := r.Node.GetRawMempool()
-			if err != nil {
-				t.Fatalf("failed to retrieve harness mempool: %v", err)
-			}
-			if len(poolHashes) > 0 {
-				break
-			}
-			time.Sleep(time.Millisecond * 100)
-		}
-		harnessSynced <- struct{}{}
-	}()
-	select {
-	case <-harnessSynced:
-	case <-time.After(time.Minute):
-		t.Fatalf("harness node never received transaction")
-	}
-
-	// This select case should fall through to the default as the goroutine
-	// should be blocked on the JoinNodes call.
-	poolsSynced := make(chan struct{})
-	go func() {
-		if err := JoinNodes(nodeSlice, Mempools); err != nil {
-			t.Fatalf("unable to join node on mempools: %v", err)
-		}
-		poolsSynced <- struct{}{}
-	}()
-	select {
-	case <-poolsSynced:
-		t.Fatalf("mempools detected as synced yet harness has a new tx")
-	default:
-	}
-
-	// Establish an outbound connection from the local harness to the main
-	// harness and wait for the chains to be synced.
-	if err := ConnectNode(harness, r); err != nil {
-		t.Fatalf("unable to connect harnesses: %v", err)
-	}
-	if err := JoinNodes(nodeSlice, Blocks); err != nil {
-		t.Fatalf("unable to join node on blocks: %v", err)
-	}
-
-	// Send the transaction to the local harness which will result in synced
-	// mempools.
-	if _, err := harness.Node.SendRawTransaction(testTx, true); err != nil {
-		t.Fatalf("send transaction failed: %v", err)
-	}
-
-	// Select once again with a special timeout case after 1 minute. The
-	// goroutine above should now be blocked on sending into the unbuffered
-	// channel. The send should immediately succeed. In order to avoid the
-	// test hanging indefinitely, a 1 minute timeout is in place.
-	select {
-	case <-poolsSynced:
-		// fall through
-	case <-time.After(time.Minute):
-		t.Fatalf("mempools never detected as synced")
-	}
-}
-
-func testJoinBlocks(r *Harness, t *testing.T) {
-	// Create a second harness with only the genesis block so it is behind
-	// the main harness.
-	harness, err := New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := harness.SetUp(false, 0); err != nil {
-		t.Fatalf("unable to complete rpctest setup: %v", err)
-	}
-	defer harness.TearDown()
-
-	nodeSlice := []*Harness{r, harness}
-	blocksSynced := make(chan struct{})
-	go func() {
-		if err := JoinNodes(nodeSlice, Blocks); err != nil {
-			t.Fatalf("unable to join node on blocks: %v", err)
-		}
-		blocksSynced <- struct{}{}
-	}()
-
-	// This select case should fall through to the default as the goroutine
-	// should be blocked on the JoinNodes calls.
-	select {
-	case <-blocksSynced:
-		t.Fatalf("blocks detected as synced yet local harness is behind")
-	default:
-	}
-
-	// Connect the local harness to the main harness which will sync the
-	// chains.
-	if err := ConnectNode(harness, r); err != nil {
-		t.Fatalf("unable to connect harnesses: %v", err)
-	}
-
-	// Select once again with a special timeout case after 1 minute. The
-	// goroutine above should now be blocked on sending into the unbuffered
-	// channel. The send should immediately succeed. In order to avoid the
-	// test hanging indefinitely, a 1 minute timeout is in place.
-	select {
-	case <-blocksSynced:
-		// fall through
-	case <-time.After(time.Minute):
-		t.Fatalf("blocks never detected as synced")
 	}
 }
 
@@ -466,47 +266,6 @@ func testGenerateAndSubmitBlockWithCustomCoinbaseOutputs(r *Harness,
 	}
 }
 
-func testMemWalletReorg(r *Harness, t *testing.T) {
-	// Create a fresh harness, we'll be using the main harness to force a
-	// re-org on this local harness.
-	harness, err := New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if err := harness.SetUp(true, 5); err != nil {
-		t.Fatalf("unable to complete rpctest setup: %v", err)
-	}
-	defer harness.TearDown()
-
-	// The internal wallet of this harness should now have 250 BTC.
-	expectedBalance := dashutil.Amount(250 * dashutil.SatoshiPerBitcoin)
-	walletBalance := harness.ConfirmedBalance()
-	if expectedBalance != walletBalance {
-		t.Fatalf("wallet balance incorrect: expected %v, got %v",
-			expectedBalance, walletBalance)
-	}
-
-	// Now connect this local harness to the main harness then wait for
-	// their chains to synchronize.
-	if err := ConnectNode(harness, r); err != nil {
-		t.Fatalf("unable to connect harnesses: %v", err)
-	}
-	nodeSlice := []*Harness{r, harness}
-	if err := JoinNodes(nodeSlice, Blocks); err != nil {
-		t.Fatalf("unable to join node on blocks: %v", err)
-	}
-
-	// The original wallet should now have a balance of 0 BTC as its entire
-	// chain should have been decimated in favor of the main harness'
-	// chain.
-	expectedBalance = dashutil.Amount(0)
-	walletBalance = harness.ConfirmedBalance()
-	if expectedBalance != walletBalance {
-		t.Fatalf("wallet balance incorrect: expected %v, got %v",
-			expectedBalance, walletBalance)
-	}
-}
-
 func testMemWalletLockedOutputs(r *Harness, t *testing.T) {
 	// Obtain the initial balance of the wallet at this point.
 	startingBalance := r.ConfirmedBalance()
@@ -563,42 +322,6 @@ var mainHarness *Harness
 const (
 	numMatureOutputs = 25
 )
-
-func TestMain(m *testing.M) {
-	var err error
-	mainHarness, err = New(&chaincfg.SimNetParams, nil, nil, "")
-	if err != nil {
-		fmt.Println("unable to create main harness: ", err)
-		os.Exit(1)
-	}
-
-	// Initialize the main mining node with a chain of length 125,
-	// providing 25 mature coinbases to allow spending from for testing
-	// purposes.
-	if err = mainHarness.SetUp(true, numMatureOutputs); err != nil {
-		fmt.Println("unable to setup test chain: ", err)
-
-		// Even though the harness was not fully setup, it still needs
-		// to be torn down to ensure all resources such as temp
-		// directories are cleaned up.  The error is intentionally
-		// ignored since this is already an error path and nothing else
-		// could be done about it anyways.
-		_ = mainHarness.TearDown()
-		os.Exit(1)
-	}
-
-	exitCode := m.Run()
-
-	// Clean up any active harnesses that are still currently running.
-	if len(ActiveHarnesses()) > 0 {
-		if err := TearDownAll(); err != nil {
-			fmt.Println("unable to tear down chain: ", err)
-			os.Exit(1)
-		}
-	}
-
-	os.Exit(exitCode)
-}
 
 func TestHarness(t *testing.T) {
 	// We should have (numMatureOutputs * 50 BTC) of mature unspendable

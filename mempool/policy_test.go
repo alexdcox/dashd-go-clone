@@ -293,7 +293,7 @@ func TestCheckTransactionStandard(t *testing.T) {
 	}
 	addrHash := [20]byte{0x01}
 	addr, err := dashutil.NewAddressPubKeyHash(addrHash[:],
-		&chaincfg.TestNet3Params)
+		&chaincfg.TestNetParams)
 	if err != nil {
 		t.Fatalf("NewAddressPubKeyHash: unexpected error: %v", err)
 	}

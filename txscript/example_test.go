@@ -24,7 +24,7 @@ func ExamplePayToAddrScript() {
 	// which is useful to ensure the accuracy of the address and determine
 	// the address type.  It is also required for the upcoming call to
 	// PayToAddrScript.
-	addressStr := "12gpXQVcCL2qhTNQgyLVdCFG2Qs2px98nV"
+	addressStr := "XkbBtnP9xSbzY9pGCC9vNcKbbPDWMf4ofD"
 	address, err := dashutil.DecodeAddress(addressStr, &chaincfg.MainNetParams)
 	if err != nil {
 		fmt.Println(err)
@@ -47,15 +47,15 @@ func ExamplePayToAddrScript() {
 	fmt.Println("Script Disassembly:", disasm)
 
 	// Output:
-	// Script Hex: 76a914128004ff2fcaf13b2b91eb654b1dc2b674f7ec6188ac
-	// Script Disassembly: OP_DUP OP_HASH160 128004ff2fcaf13b2b91eb654b1dc2b674f7ec61 OP_EQUALVERIFY OP_CHECKSIG
+	// Script Hex: 76a9146c9f820e28a1f5e18051da8e9ac926ba809a082b88ac
+	// Script Disassembly: OP_DUP OP_HASH160 6c9f820e28a1f5e18051da8e9ac926ba809a082b OP_EQUALVERIFY OP_CHECKSIG
 }
 
 // This example demonstrates extracting information from a standard public key
 // script.
 func ExampleExtractPkScriptAddrs() {
 	// Start with a standard pay-to-pubkey-hash script.
-	scriptHex := "76a914128004ff2fcaf13b2b91eb654b1dc2b674f7ec6188ac"
+	scriptHex := "76a9146c9f820e28a1f5e18051da8e9ac926ba809a082b88ac"
 	script, err := hex.DecodeString(scriptHex)
 	if err != nil {
 		fmt.Println(err)
@@ -75,7 +75,7 @@ func ExampleExtractPkScriptAddrs() {
 
 	// Output:
 	// Script Class: pubkeyhash
-	// Addresses: [12gpXQVcCL2qhTNQgyLVdCFG2Qs2px98nV]
+	// Addresses: [XkbBtnP9xSbzY9pGCC9vNcKbbPDWMf4ofD]
 	// Required Signatures: 1
 }
 
